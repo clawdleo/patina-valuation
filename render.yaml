@@ -1,0 +1,10 @@
+services:
+  - type: web
+    name: patina-valuation
+    runtime: static
+    buildCommand: echo "No build needed"
+    staticPublishPath: ./public
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html

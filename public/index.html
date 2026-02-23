@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patina - Free MTB Valuation Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #fff;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 20px;
+            backdrop-filter: blur(10px);
+        }
+
+        .logo {
+            font-size: 42px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 10px;
+        }
+
+        .tagline {
+            color: #aaa;
+            font-size: 18px;
+            margin-bottom: 5px;
+        }
+
+        .subtitle {
+            color: #888;
+            font-size: 14px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 20px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #ddd;
+            font-weight: 500;
+            font-size: 14px;
+        }
+
+        .required {
+            color: #ff6b6b;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 16px;
+            border-radius: 8px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+            color: #fff;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #ff6b6b;
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        textarea {
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+        }
+
+        .hint {
+            font-size: 12px;
+            color: #888;
+            margin-top: 4px;
+        }
+
+        button {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            border: none;
+            border-radius: 8px;
+            color: #fff;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .result {
+            display: none;
+            margin-top: 30px;
+        }
+
+        .valuation-box {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ffa500 100%);
+            padding: 40px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .valuation-amount {
+            font-size: 56px;
+            font-weight: 700;
+            margin: 20px 0;
+        }
+
+        .tier-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .explanation {
+            background: rgba(255, 255, 255, 0.08);
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .explanation h3 {
+            margin-bottom: 10px;
+            color: #ff6b6b;
+            font-size: 18px;
+        }
+
+        .explanation ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .explanation li {
+            padding: 6px 0;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .explanation li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #ff6b6b;
+            font-weight: bold;
+        }
+
+        .cta-box {
+            background: rgba(255, 107, 107, 0.1);
+            border: 2px solid #ff6b6b;
+            padding: 24px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .cta-box h3 {
+            margin-bottom: 12px;
+            color: #ff6b6b;
+        }
+
+        .cta-box p {
+            margin-bottom: 20px;
+            color: #ddd;
+            line-height: 1.6;
+        }
+
+        .email-form {
+            display: flex;
+            gap: 10px;
+            margin-top: 16px;
+        }
+
+        .email-form input {
+            flex: 1;
+        }
+
+        .email-form button {
+            width: auto;
+            padding: 12px 24px;
+            font-size: 16px;
+        }
+
+        .premium-features {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .premium-features ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .premium-features li {
+            padding: 8px 0;
+            padding-left: 28px;
+            position: relative;
+            color: #ddd;
+            font-size: 14px;
+        }
+
+        .premium-features li:before {
+            content: "⭐";
+            position: absolute;
+            left: 0;
+        }
+
+        .success-message {
+            display: none;
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4caf50;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .success-message h3 {
+            color: #4caf50;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="logo">PATINA</div>
+            <div class="tagline">Free Vintage MTB Valuation</div>
+            <div class="subtitle">Preserved not restored • EU's trusted vintage MTB dealer</div>
+        </div>
+
+        <div class="card" id="form-card">
+            <h2 style="margin-bottom: 20px;">Get Your Free Valuation</h2>
+            <p style="color: #aaa; margin-bottom: 30px;">Tell us about your bike and we'll estimate its market value based on current EU vintage MTB trends.</p>
+
+            <form id="valuation-form">
+                <div class="form-group">
+                    <label>Brand <span class="required">*</span></label>
+                    <input type="text" id="brand" required placeholder="e.g. Specialized, Klein, Yeti">
+                </div>
+
+                <div class="form-group">
+                    <label>Model <span class="required">*</span></label>
+                    <input type="text" id="model" required placeholder="e.g. Stumpjumper, Attitude, ARC">
+                </div>
+
+                <div class="form-group">
+                    <label>Year <span class="required">*</span></label>
+                    <input type="number" id="year" required min="1970" max="2000" placeholder="e.g. 1992">
+                    <div class="hint">Pre-1985 bikes can command premium prices</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Condition <span class="required">*</span></label>
+                    <select id="condition" required>
+                        <option value="">Select condition...</option>
+                        <option value="museum">Museum - Original paint, no wear, documented provenance</option>
+                        <option value="excellent">Excellent - Original paint, minimal wear, well preserved</option>
+                        <option value="good">Good - Original paint with patina, functional, some wear</option>
+                        <option value="fair">Fair - Repaints or mixed parts, functional</option>
+                        <option value="poor">Poor - Heavy wear, restoration needed</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Original Paint?</label>
+                    <select id="paint">
+                        <option value="yes">Yes - Factory original</option>
+                        <option value="touch">Touch-ups only</option>
+                        <option value="no">No - Repainted</option>
+                    </select>
+                    <div class="hint">Original paint adds 40-60% premium</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Components</label>
+                    <select id="components">
+                        <option value="all-original">All original spec</option>
+                        <option value="mostly-original">Mostly original (80%+)</option>
+                        <option value="period-correct">Period-correct replacements</option>
+                        <option value="mixed">Mix of eras</option>
+                        <option value="modern">Modern components</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Provenance</label>
+                    <select id="provenance">
+                        <option value="none">Unknown history</option>
+                        <option value="known">Known history, no docs</option>
+                        <option value="first-owner">First owner, documented</option>
+                        <option value="race">Race history / team bike</option>
+                    </select>
+                    <div class="hint">First owner docs can add 50-100%</div>
+                </div>
+
+                <div class="form-group">
+                    <label>Additional Details</label>
+                    <textarea id="details" placeholder="Any special features, rare colors, or notable history..."></textarea>
+                </div>
+
+                <button type="submit">Get Free Valuation</button>
+            </form>
+        </div>
+
+        <div class="result" id="result">
+            <div class="valuation-box">
+                <div class="tier-badge" id="tier-badge">CALCULATING...</div>
+                <div style="font-size: 18px; opacity: 0.9;">Estimated Market Value</div>
+                <div class="valuation-amount" id="value-display">—</div>
+                <div style="font-size: 14px; opacity: 0.8;" id="value-range">—</div>
+            </div>
+
+            <div class="explanation">
+                <h3>How We Calculated This</h3>
+                <ul id="factors-list"></ul>
+            </div>
+
+            <div class="cta-box">
+                <h3>Want a Detailed Valuation Report?</h3>
+                <p>Get a comprehensive 5-page PDF report including comparable sales data, market trends, and selling strategy - plus direct connection to EU buyers if you're ready to sell.</p>
+                
+                <div class="email-form">
+                    <input type="email" id="email-input" placeholder="Your email address" required>
+                    <button onclick="requestReport()">Send Report</button>
+                </div>
+
+                <div class="premium-features">
+                    <strong style="color: #ff6b6b;">Premium Report Includes:</strong>
+                    <ul>
+                        <li>Recent comparable sales (Germany, UK, Austria)</li>
+                        <li>Brand-specific market trends & appreciation data</li>
+                        <li>Optimal selling platforms for this bike</li>
+                        <li>Professional photography tips</li>
+                        <li>Direct buyer network access (if selling)</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="success-message" id="success-message">
+                <h3>✓ Report Requested!</h3>
+                <p>We'll send your detailed valuation report within 24 hours. Check your email soon!</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Pricing database
+        const brandMultipliers = {
+            'klein': 2.2,
+            'yeti': 2.0,
+            'fat chance': 1.9,
+            'breezer': 1.8,
+            'ritchey': 1.7,
+            'specialized': 1.4,
+            'cannondale': 1.3,
+            'trek': 1.2,
+            'gt': 1.1,
+            'default': 1.0
+        };
+
+        const conditionValues = {
+            'museum': 1400,
+            'excellent': 900,
+            'good': 600,
+            'fair': 350,
+            'poor': 150
+        };
+
+        const conditionMultipliers = {
+            'museum': 3.0,
+            'excellent': 2.0,
+            'good': 1.3,
+            'fair': 0.8,
+            'poor': 0.5
+        };
+
+        document.getElementById('valuation-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            calculateValuation();
+        });
+
+        function calculateValuation() {
+            const brand = document.getElementById('brand').value.toLowerCase().trim();
+            const model = document.getElementById('model').value;
+            const year = parseInt(document.getElementById('year').value);
+            const condition = document.getElementById('condition').value;
+            const paint = document.getElementById('paint').value;
+            const components = document.getElementById('components').value;
+            const provenance = document.getElementById('provenance').value;
+            const details = document.getElementById('details').value.toLowerCase();
+
+            const factors = [];
+            
+            // Base value
+            let baseValue = conditionValues[condition] || 400;
+            let multiplier = conditionMultipliers[condition] || 1.0;
+
+            // Brand multiplier
+            let brandMult = brandMultipliers['default'];
+            for (const [brandKey, mult] of Object.entries(brandMultipliers)) {
+                if (brand.includes(brandKey)) {
+                    brandMult = mult;
+                    if (mult > 1.3) {
+                        factors.push(`Collectible brand (${brand.charAt(0).toUpperCase() + brand.slice(1)}): +${Math.round((mult - 1) * 100)}%`);
+                    }
+                    break;
+                }
+            }
+            multiplier *= brandMult;
+
+            // Pre-1985 trophy tier
+            if (year < 1985) {
+                multiplier *= 1.8;
+                factors.push('Pre-1985 (Trophy tier): +80%');
+            } else if (year < 1990) {
+                multiplier *= 1.3;
+                factors.push('1985-1990 (Golden era): +30%');
+            }
+
+            // Original paint premium
+            if (paint === 'yes') {
+                multiplier *= 1.5;
+                factors.push('Original factory paint: +50%');
+            } else if (paint === 'no') {
+                multiplier *= 0.7;
+                factors.push('Repainted: -30%');
+            }
+
+            // Components
+            if (components === 'all-original') {
+                multiplier *= 1.3;
+                factors.push('All original components: +30%');
+            } else if (components === 'modern') {
+                multiplier *= 0.6;
+                factors.push('Modern components: -40%');
+            }
+
+            // Provenance
+            if (provenance === 'first-owner') {
+                multiplier *= 1.75;
+                factors.push('First owner documented: +75%');
+            } else if (provenance === 'race') {
+                multiplier *= 2.0;
+                factors.push('Race history/team bike: +100%');
+            }
+
+            // Special models
+            if (model.toLowerCase().includes('team') || details.includes('team')) {
+                multiplier *= 1.4;
+                factors.push('Team edition: +40%');
+            }
+
+            // Calculate final value
+            const estimatedValue = Math.round(baseValue * multiplier);
+            const lowRange = Math.round(estimatedValue * 0.8);
+            const highRange = Math.round(estimatedValue * 1.2);
+
+            // Determine tier
+            let tier = 'MID-RANGE';
+            if (estimatedValue >= 5000) {
+                tier = 'TROPHY TIER';
+            } else if (estimatedValue >= 1500) {
+                tier = 'PREMIUM COLLECTOR';
+            }
+
+            // Display results
+            document.getElementById('tier-badge').textContent = tier;
+            document.getElementById('value-display').textContent = `€${estimatedValue.toLocaleString()}`;
+            document.getElementById('value-range').textContent = `Range: €${lowRange.toLocaleString()} - €${highRange.toLocaleString()}`;
+
+            const factorsList = document.getElementById('factors-list');
+            factorsList.innerHTML = '';
+            factors.forEach(factor => {
+                const li = document.createElement('li');
+                li.textContent = factor;
+                factorsList.appendChild(li);
+            });
+
+            // Show result
+            document.getElementById('form-card').style.display = 'none';
+            document.getElementById('result').style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+
+            // Store valuation data for report
+            window.valuationData = {
+                brand, model, year, condition, paint, components, provenance,
+                estimatedValue, lowRange, highRange, tier, factors
+            };
+        }
+
+        function requestReport() {
+            const email = document.getElementById('email-input').value;
+            if (!email || !email.includes('@')) {
+                alert('Please enter a valid email address');
+                return;
+            }
+
+            // Store lead
+            const lead = {
+                email,
+                ...window.valuationData,
+                timestamp: new Date().toISOString()
+            };
+
+            // Save to localStorage (in real version, this would go to a backend)
+            const leads = JSON.parse(localStorage.getItem('patina-leads') || '[]');
+            leads.push(lead);
+            localStorage.setItem('patina-leads', JSON.stringify(leads));
+
+            // Show success
+            document.getElementById('success-message').style.display = 'block';
+            document.getElementById('email-input').value = '';
+            
+            console.log('Lead captured:', lead);
+        }
+    </script>
+</body>
+</html>
